@@ -1,0 +1,42 @@
+name: Stage cropped ClassMaker media
+on:
+  push:
+    branches: [classmaker-media-stage]
+    paths: [.github/workflows/stage-classmaker-media.yml]
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Transfer and verify cropped recording
+        shell: python
+        run: |
+          import base64, hashlib, io, json, os, subprocess, urllib.request, zipfile
+          repo = 'galiettemita/Galiette-portfolio'
+          assert os.environ['GITHUB_REPOSITORY'] == repo
+          source = 'https://sdmntprcentralus.oaiusercontent.com/files/00000000-a038-81f5-8a6f-ff00686a2ebc/raw?se=2026-10-05T03%3A08%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=b4357205-9e05-5081-b5e6-6cab7ca4e782&skoid=78501c7f-f65d-4e8d-9110-bed29e1beb41&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T14%3A14%3A00Z&ske=2026-10-05T14%3A14%3A00Z&sks=b&skv=2026-02-06&sig=lOq3aQPQ1F5LVK3ia5VQj/qZkgYX2XOh9AJT3TN5qRk%3D'
+          archive = subprocess.check_output(['curl', '--fail', '--silent', '--show-error', '--location', '--proto', '=https', '--max-time', '90', '--max-filesize', '4000000', source])
+          assert len(archive) == 3342501
+          assert hashlib.sha256(archive).hexdigest() == '76966252513322231cb2d21e1517fc0787175bf6a14f5a54b73e6a553df73851'
+          expected = {
+            'videos/classmaker.mp4': ('f3f72bbfa235229367e75efc661798faf869e10c5c5f5b9c40d6d5966cf2f8da', 3114185),
+            'posters/classmaker.jpg': ('cd7ad7b976c5f1cad62128fc0b3e57505b8b94f3bf252806b0490e980df0bbd6', 228056)
+          }
+          results = {}
+          with zipfile.ZipFile(io.BytesIO(archive)) as z:
+            assert set(z.namelist()) == set(expected)
+            for path, (digest, size) in expected.items():
+              assert z.getinfo(path).file_size == size
+              data = z.read(path)
+              assert hashlib.sha256(data).hexdigest() == digest
+              payload = json.dumps({'content': base64.b64encode(data).decode(), 'encoding': 'base64'}).encode()
+              request = urllib.request.Request('https://api.github.com/repos/' + repo + '/git/blobs', data=payload, headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'X-GitHub-Api-Version': '2022-11-28'}, method='POST')
+              with urllib.request.urlopen(request, timeout=60) as response:
+                result = json.load(response)
+              assert result['sha'] == hashlib.sha1(b'blob ' + str(size).encode() + b'\x00' + data).hexdigest()
+              results[path] = {'sha': result['sha'], 'size': size, 'sha256': digest}
+          print('VERIFIED_CLASSMAKER_BLOBS=' + json.dumps(results, sort_keys=True))
