@@ -1,0 +1,30 @@
+name: Verify ClassMaker production release
+on:
+  push:
+    branches: [classmaker-media-stage]
+    paths: [.github/workflows/verify-classmaker-release.yml]
+permissions: {}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check production serves the exact verified files
+        shell: python
+        run: |
+          import hashlib, subprocess
+          base = 'https://galiette-portfolio.vercel.app/'
+          expected = {
+            'media.js': ('e46894528eb2d32ab060b4bb36086ed9960f8e98', 531),
+            'videos/classmaker.mp4': ('cf427b7cb6be7864fd7745fd5283494a088c9e69', 3114185),
+            'posters/classmaker.jpg': ('d82aee4ff70ead8c1c13093d002019c80460ff7c', 228056),
+            'videos/mobile-pros.mp4': ('6f1164fe0aa07b8558c9d28e4b494ba72ac87afd', 2424596),
+            'videos/pneumoscan.mp4': ('72cf37cbbc25effac9a95e89fec84632fa489797', 1613959)
+          }
+          for path, (sha, length) in expected.items():
+            data = subprocess.check_output(['curl','--fail','--silent','--show-error','--location','--proto','=https','--max-time','45','--max-filesize','4000000',base+path])
+            assert len(data) == length, 'Unexpected content at ' + path
+            actual = hashlib.sha1(b'blob '+str(len(data)).encode()+b'\x00'+data).hexdigest()
+            assert actual == sha, 'Production checksum mismatch for ' + path
+            print('PASS: public production serves exact verified bytes: '+path)
+          print('CLASSMAKER_PRODUCTION_ASSETS_VERIFIED')
