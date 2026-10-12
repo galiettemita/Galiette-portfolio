@@ -1,5 +1,77 @@
 (() => {
   'use strict';
+
+  function injectApplyLog() {
+    const classmaker = document.getElementById('classmaker');
+    if (classmaker && !document.getElementById('applylog')) {
+      classmaker.insertAdjacentHTML('afterend', `
+<article aria-labelledby="applylog-title" class="project feature" id="applylog">
+  <div class="video-shell" data-project="applylog" data-state="empty">
+    <video aria-label="ApplyLog silent project demo" loop muted playsinline preload="none">Your browser cannot play this video.</video>
+    <div class="video-placeholder">
+      <span class="preview-category">03 / ApplyLog</span>
+      <div aria-hidden="true" class="demo-mark"><span></span><span></span><span></span></div>
+      <strong class="placeholder-title">Demo coming soon</strong>
+      <span class="placeholder-note">Sign in → save → track → persist</span>
+      <span class="silent-note">Short walkthrough · no sound needed</span>
+    </div>
+    <div class="video-label">ApplyLog · silent demo with synthetic data</div>
+    <button aria-label="Play ApplyLog demo" class="video-toggle" hidden type="button">Play demo</button>
+  </div>
+  <div class="project-copy">
+    <div class="project-number">03</div>
+    <div class="project-meta"><span class="project-status">Deployed</span><span>Personal cloud project · October 2026</span></div>
+    <h3 id="applylog-title">ApplyLog</h3>
+    <p class="project-hook">I wanted to understand cloud architecture by following one real record all the way through the stack.</p>
+    <p>ApplyLog is a private serverless internship tracker built with React, TypeScript, AWS Amplify Gen 2, Cognito, AppSync, GraphQL, and DynamoDB. I implemented authenticated CRUD, owner-based data isolation, input validation, automated logic tests, and deployment checks—then worked through the build and runtime failures that surfaced when the pieces met in production.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="https://main.d19nr4jrdg173h.amplifyapp.com" rel="noreferrer" target="_blank">Live app ↗</a>
+      <a class="button ghost" href="https://github.com/galiettemita/aws-applylog" rel="noreferrer" target="_blank">Source ↗</a>
+    </div>
+    <div class="chips"><span>AWS Amplify Gen 2</span><span>Cognito</span><span>AppSync</span><span>DynamoDB</span><span>GraphQL</span></div>
+  </div>
+</article>`);
+    }
+
+    const glance = document.querySelector('.now-list a[href="#ai-agent"]');
+    if (glance) {
+      glance.href = '#applylog';
+      glance.innerHTML = '<span class="now-label">Deployed</span><strong>ApplyLog</strong><span class="now-description">A private serverless tracker on AWS.</span><span aria-hidden="true" class="now-arrow">↗</span>';
+    }
+
+    const proofItems = document.querySelectorAll('.mini-proof span');
+    if (proofItems[2]) proofItems[2].innerHTML = '<strong>AWS</strong> serverless · ApplyLog';
+
+    const index = document.querySelector('.project-index');
+    if (index) {
+      index.innerHTML = [
+        ['01', 'mobile-pros', 'Mobile Pros'],
+        ['02', 'classmaker', 'ClassMaker'],
+        ['03', 'applylog', 'ApplyLog'],
+        ['04', 'ai-agent', 'Personal AI Agent'],
+        ['05', 'medical-ai', 'Medical Imaging'],
+        ['06', 'pneumoscan', 'PneumoScan'],
+      ].map(([number, id, name]) => `<a href="#${id}"><span>${number}</span>${name}<b aria-hidden="true">↗</b></a>`).join('');
+    }
+
+    const layouts = [
+      ['ai-agent', '04', 'Personal AI Agent', true],
+      ['medical-ai', '05', 'Medical Imaging', false],
+      ['pneumoscan', '06', 'PneumoScan', true],
+    ];
+    layouts.forEach(([id, number, title, reverse]) => {
+      const article = document.getElementById(id);
+      if (!article) return;
+      article.classList.toggle('reverse', reverse);
+      const projectNumber = article.querySelector('.project-number');
+      if (projectNumber) projectNumber.textContent = number;
+      const category = article.querySelector('.preview-category');
+      if (category) category.textContent = `${number} / ${title}`;
+    });
+  }
+
+  injectApplyLog();
+
   const media = window.PORTFOLIO_MEDIA || {};
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const states = [];
@@ -80,7 +152,7 @@
         play(state);
       } else {
         state.userPaused = true;
-        video.pause();
+        state.video.pause();
       }
     });
     if (observer) observer.observe(shell);

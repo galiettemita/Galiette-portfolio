@@ -3,6 +3,7 @@
 window.PORTFOLIO_MEDIA = {
   "mobile-pros": {"src": "videos/mobile-pros.mp4", "poster": "posters/mobile-pros.jpg"},
   "classmaker": {"src": "videos/classmaker.mp4", "poster": "posters/classmaker.jpg"},
+  "applylog": {"src": "videos/applylog.mp4", "poster": "posters/applylog.jpg"},
   "ai-agent": {"src": "", "poster": ""},
   "medical-ai": {"src": "", "poster": ""},
   "pneumoscan": {"src": "videos/pneumoscan.mp4", "poster": "posters/pneumoscan.jpg"}
