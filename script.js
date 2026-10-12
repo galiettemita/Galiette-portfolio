@@ -101,7 +101,17 @@
     state.shell.dataset.state = 'loading';
     state.video.preload = 'metadata';
     if (state.config.poster) state.video.poster = state.config.poster;
-    state.video.src = state.config.src;
+    if (Array.isArray(state.config.sources)) {
+      state.config.sources.forEach(item => {
+        if (!item || typeof item.src !== 'string' || !item.src.trim()) return;
+        const source = document.createElement('source');
+        source.src = item.src;
+        if (item.type) source.type = item.type;
+        state.video.appendChild(source);
+      });
+    } else {
+      state.video.src = state.config.src;
+    }
     state.video.load();
   }
 
@@ -117,7 +127,9 @@
 
   document.querySelectorAll('.video-shell').forEach(shell => {
     const config = media[shell.dataset.project];
-    if (!config || typeof config.src !== 'string' || !config.src.trim()) return;
+    const hasSingleSource = config && typeof config.src === 'string' && config.src.trim();
+    const hasSourceList = config && Array.isArray(config.sources) && config.sources.some(item => item && typeof item.src === 'string' && item.src.trim());
+    if (!hasSingleSource && !hasSourceList) return;
     const video = shell.querySelector('video');
     const button = shell.querySelector('.video-toggle');
     if (!video || !button) return;
