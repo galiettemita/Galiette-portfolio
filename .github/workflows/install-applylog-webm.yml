@@ -1,0 +1,37 @@
+name: Install ApplyLog WebM fallback
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/install-applylog-webm.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install-webm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download WebM fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p videos
+          curl --fail --location --retry 3 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-0ca0-8246-89e8-36ec551be79c/raw?se=2026-10-12T10%3A26%3A52Z&sp=r&sv=2026-02-06&sr=b&scid=6e9af481-b865-5ec5-ad50-8ed344f97e93&skoid=78501c7f-f65d-4e8d-9110-bed29e1beb41&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-12T01%3A16%3A10Z&ske=2026-10-13T01%3A16%3A10Z&sks=b&skv=2026-02-06&sig=uxs%2BFh%2Bzqj/A/u49lWqOmPLYeR5u4GgigBWhiyzcgMk%3D' --output videos/applylog.webm
+          test "$(wc -c < videos/applylog.webm)" -gt 70000
+
+      - name: Commit fallback and remove installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/install-applylog-webm.yml
+          git add videos/applylog.webm
+          git commit -m 'Add ApplyLog WebM demo fallback'
+          git push
