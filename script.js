@@ -1,184 +1,277 @@
 (() => {
   'use strict';
 
-  function injectApplyLog() {
-    const classmaker = document.getElementById('classmaker');
-    if (classmaker && !document.getElementById('applylog')) {
-      classmaker.insertAdjacentHTML('afterend', `
-<article aria-labelledby="applylog-title" class="project feature" id="applylog">
-  <div class="video-shell" data-project="applylog" data-state="empty">
-    <video aria-label="ApplyLog silent project demo" loop muted playsinline preload="none">Your browser cannot play this video.</video>
-    <div class="video-placeholder">
-      <span class="preview-category">03 / ApplyLog</span>
-      <div aria-hidden="true" class="demo-mark"><span></span><span></span><span></span></div>
-      <strong class="placeholder-title">Demo coming soon</strong>
-      <span class="placeholder-note">Sign in → save → track → persist</span>
-      <span class="silent-note">Short walkthrough · no sound needed</span>
-    </div>
-    <div class="video-label">ApplyLog · silent demo with synthetic data</div>
-    <button aria-label="Play ApplyLog demo" class="video-toggle" hidden type="button">Play demo</button>
-  </div>
-  <div class="project-copy">
-    <div class="project-number">03</div>
-    <div class="project-meta"><span class="project-status">Deployed</span><span>Personal cloud project · October 2026</span></div>
-    <h3 id="applylog-title">ApplyLog</h3>
-    <p class="project-hook">I wanted to understand cloud architecture by following one real record all the way through the stack.</p>
-    <p>ApplyLog is a private serverless internship tracker built with React, TypeScript, AWS Amplify Gen 2, Cognito, AppSync, GraphQL, and DynamoDB. I implemented authenticated CRUD, owner-based data isolation, input validation, automated logic tests, and deployment checks—then worked through the build and runtime failures that surfaced when the pieces met in production.</p>
-    <div class="hero-actions">
-      <a class="button primary" href="https://main.d19nr4jrdg173h.amplifyapp.com" rel="noreferrer" target="_blank">Live app ↗</a>
-      <a class="button ghost" href="https://github.com/galiettemita/aws-applylog" rel="noreferrer" target="_blank">Source ↗</a>
-    </div>
-    <div class="chips"><span>AWS Amplify Gen 2</span><span>Cognito</span><span>AppSync</span><span>DynamoDB</span><span>GraphQL</span></div>
-  </div>
-</article>`);
+  const projects = {
+    'mobile-pros': {
+      number: '01',
+      label: 'MOBILE PROS',
+      status: 'PRODUCTION CLIENT WORK',
+      title: 'Mobile Pros',
+      summary: 'A B2B auction and live inventory platform that I build and maintain for a real electronics business.',
+      challenge: 'The platform has to keep inventory, bids, buyer access, pricing, and order status consistent while staff use it during active sales.',
+      metrics: [
+        ['50+', 'buyers'],
+        ['$100K+', 'inventory'],
+        ['Live', 'business workflows'],
+      ],
+      stack: ['TypeScript', 'Next.js', 'PostgreSQL', 'Supabase'],
+      trace: [
+        'Inventory enters PostgreSQL',
+        'Business rules set price and status',
+        'Buyers bid or purchase',
+        'Staff close and reconcile orders',
+      ],
+      poster: 'https://galiette-portfolio.vercel.app/posters/mobile-pros.jpg',
+      sources: [{ src: 'https://galiette-portfolio.vercel.app/videos/mobile-pros.mp4', type: 'video/mp4' }],
+      links: [],
+    },
+    classmaker: {
+      number: '02',
+      label: 'CLASSMAKER',
+      status: 'PRODUCTION SCHOOL SOFTWARE',
+      title: 'ClassMaker',
+      summary: 'A class placement platform used by my former elementary school to organize about 1,000 students across 9 grades and 55 classrooms.',
+      challenge: 'Placement has to satisfy many competing constraints at once, including capacity, friend requests, teacher restrictions, support hours, and balanced class composition.',
+      metrics: [
+        ['1,000', 'students'],
+        ['55', 'classrooms'],
+        ['9', 'grades'],
+      ],
+      stack: ['TypeScript', 'Constraint logic', 'Spreadsheet ingestion', 'Student ID matching'],
+      trace: [
+        'Staff upload student spreadsheets',
+        'Student IDs merge new and existing records',
+        'Constraint rules score placements',
+        'Administrators review and adjust rosters',
+      ],
+      poster: 'https://galiette-portfolio.vercel.app/posters/classmaker.jpg',
+      sources: [{ src: 'https://galiette-portfolio.vercel.app/videos/classmaker.mp4', type: 'video/mp4' }],
+      links: [],
+    },
+    brevia: {
+      number: '03',
+      label: 'BREVIA',
+      status: 'PERSONAL AI SYSTEM',
+      title: 'Brevia',
+      summary: 'A personal AI agent that connects to tools and completes multi-step tasks instead of only describing what the user should do.',
+      challenge: 'The hard part is not the chat interface. It is durable task state, permission boundaries, tool failures, and knowing when the person needs to take over.',
+      metrics: [
+        ['MCP', 'tool access'],
+        ['Gmail', 'Google integration'],
+        ['Human', 'approval gates'],
+      ],
+      stack: ['MCP', 'Google Cloud', 'Gmail API', 'Browser automation'],
+      trace: [
+        'User describes an outcome',
+        'Agent builds a task plan',
+        'Permission rules gate sensitive actions',
+        'Tools execute and report results',
+      ],
+      poster: '',
+      sources: [],
+      links: [],
+    },
+    applylog: {
+      number: '04',
+      label: 'APPLYLOG',
+      status: 'DEPLOYED CLOUD PROJECT',
+      title: 'ApplyLog',
+      summary: 'A private serverless internship tracker built to follow one authenticated record from the interface through the cloud stack.',
+      challenge: 'The project made cloud architecture concrete by requiring authentication, owner based data access, validation, CRUD operations, deployment, and runtime debugging to work together.',
+      metrics: [
+        ['Private', 'owner scoped data'],
+        ['CRUD', 'complete workflow'],
+        ['AWS', 'serverless stack'],
+      ],
+      stack: ['React', 'TypeScript', 'AWS Amplify Gen 2', 'Cognito', 'AppSync', 'DynamoDB'],
+      trace: [
+        'Cognito authenticates the user',
+        'React sends a GraphQL operation',
+        'AppSync enforces owner access',
+        'DynamoDB persists the application',
+      ],
+      poster: 'https://galiette-portfolio.vercel.app/posters/applylog.jpg',
+      sources: [
+        { src: 'https://galiette-portfolio.vercel.app/videos/applylog.webm', type: 'video/webm' },
+        { src: 'https://galiette-portfolio.vercel.app/videos/applylog.mp4', type: 'video/mp4' },
+      ],
+      links: [
+        { label: 'Open live app', href: 'https://main.d19nr4jrdg173h.amplifyapp.com' },
+        { label: 'View source', href: 'https://github.com/galiettemita/aws-applylog' },
+      ],
+    },
+  };
+
+  const order = ['mobile-pros', 'classmaker', 'brevia', 'applylog'];
+  const buttons = Array.from(document.querySelectorAll('[data-project-id]'));
+  const stage = document.getElementById('project-stage');
+  const video = document.getElementById('project-video');
+  const diagram = document.getElementById('project-diagram');
+  const mediaFrame = document.getElementById('media-frame');
+  const number = document.getElementById('stage-number');
+  const status = document.getElementById('stage-status');
+  const title = document.getElementById('project-title');
+  const summary = document.getElementById('project-summary');
+  const challenge = document.getElementById('project-challenge');
+  const trace = document.getElementById('project-trace');
+  const stack = document.getElementById('project-stack');
+  const links = document.getElementById('project-links');
+  const metricValues = [
+    document.getElementById('metric-one-value'),
+    document.getElementById('metric-two-value'),
+    document.getElementById('metric-three-value'),
+  ];
+  const metricLabels = [
+    document.getElementById('metric-one-label'),
+    document.getElementById('metric-two-label'),
+    document.getElementById('metric-three-label'),
+  ];
+
+  function setMedia(project) {
+    video.pause();
+    while (video.firstChild) video.removeChild(video.firstChild);
+
+    if (!project.sources.length) {
+      video.hidden = true;
+      diagram.hidden = false;
+      mediaFrame.classList.add('is-diagram');
+      video.removeAttribute('poster');
+      video.load();
+      return;
     }
 
-    const glance = document.querySelector('.now-list a[href="#ai-agent"]');
-    if (glance) {
-      glance.href = '#applylog';
-      glance.innerHTML = '<span class="now-label">Deployed</span><strong>ApplyLog</strong><span class="now-description">A private serverless tracker on AWS.</span><span aria-hidden="true" class="now-arrow">↗</span>';
-    }
+    diagram.hidden = true;
+    video.hidden = false;
+    mediaFrame.classList.remove('is-diagram');
+    if (project.poster) video.poster = project.poster;
+    else video.removeAttribute('poster');
 
-    const proofItems = document.querySelectorAll('.mini-proof span');
-    if (proofItems[2]) proofItems[2].innerHTML = '<strong>AWS</strong> serverless · ApplyLog';
-
-    const index = document.querySelector('.project-index');
-    if (index) {
-      index.innerHTML = [
-        ['01', 'mobile-pros', 'Mobile Pros'],
-        ['02', 'classmaker', 'ClassMaker'],
-        ['03', 'applylog', 'ApplyLog'],
-        ['04', 'ai-agent', 'Personal AI Agent'],
-        ['05', 'medical-ai', 'Medical Imaging'],
-        ['06', 'pneumoscan', 'PneumoScan'],
-      ].map(([number, id, name]) => `<a href="#${id}"><span>${number}</span>${name}<b aria-hidden="true">↗</b></a>`).join('');
-    }
-
-    const layouts = [
-      ['ai-agent', '04', 'Personal AI Agent', true],
-      ['medical-ai', '05', 'Medical Imaging', false],
-      ['pneumoscan', '06', 'PneumoScan', true],
-    ];
-    layouts.forEach(([id, number, title, reverse]) => {
-      const article = document.getElementById(id);
-      if (!article) return;
-      article.classList.toggle('reverse', reverse);
-      const projectNumber = article.querySelector('.project-number');
-      if (projectNumber) projectNumber.textContent = number;
-      const category = article.querySelector('.preview-category');
-      if (category) category.textContent = `${number} / ${title}`;
+    project.sources.forEach((sourceData) => {
+      const source = document.createElement('source');
+      source.src = sourceData.src;
+      source.type = sourceData.type;
+      video.appendChild(source);
     });
+    video.appendChild(document.createTextNode('Your browser does not support the video element.'));
+    video.load();
   }
 
-  injectApplyLog();
-
-  const media = window.PORTFOLIO_MEDIA || {};
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const states = [];
-
-  function updateButton(state) {
-    state.button.textContent = state.video.paused ? 'Play demo' : 'Pause demo';
-    state.button.setAttribute('aria-label', `${state.video.paused ? 'Play' : 'Pause'} ${state.title} demo`);
+  function renderList(element, items, renderer) {
+    element.replaceChildren(...items.map(renderer));
   }
 
-  function play(state) {
-    const promise = state.video.play();
-    if (promise && typeof promise.catch === 'function') promise.catch(() => updateButton(state));
-  }
+  function selectProject(projectId, options = {}) {
+    const project = projects[projectId];
+    if (!project) return;
 
-  function syncPlayback(state) {
-    if (!state.ready) return;
-    if (!state.inView || document.hidden) {
-      state.video.pause();
-    } else if (!state.userPaused && (!reducedMotion.matches || state.userStarted)) {
-      play(state);
-    }
-  }
-
-  function load(state) {
-    if (state.loaded) return;
-    state.loaded = true;
-    state.shell.dataset.state = 'loading';
-    state.video.preload = 'metadata';
-    if (state.config.poster) state.video.poster = state.config.poster;
-    if (Array.isArray(state.config.sources)) {
-      state.config.sources.forEach(item => {
-        if (!item || typeof item.src !== 'string' || !item.src.trim()) return;
-        const source = document.createElement('source');
-        source.src = item.src;
-        if (item.type) source.type = item.type;
-        state.video.appendChild(source);
-      });
-    } else {
-      state.video.src = state.config.src;
-    }
-    state.video.load();
-  }
-
-  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
-    for (const entry of entries) {
-      const state = states.find(item => item.shell === entry.target);
-      if (!state) continue;
-      state.inView = entry.isIntersecting && entry.intersectionRatio >= 0.35;
-      if (entry.isIntersecting) load(state);
-      syncPlayback(state);
-    }
-  }, {threshold: [0, 0.35]}) : null;
-
-  document.querySelectorAll('.video-shell').forEach(shell => {
-    const config = media[shell.dataset.project];
-    const hasSingleSource = config && typeof config.src === 'string' && config.src.trim();
-    const hasSourceList = config && Array.isArray(config.sources) && config.sources.some(item => item && typeof item.src === 'string' && item.src.trim());
-    if (!hasSingleSource && !hasSourceList) return;
-    const video = shell.querySelector('video');
-    const button = shell.querySelector('.video-toggle');
-    if (!video || !button) return;
-    const title = shell.closest('article').querySelector('h3').textContent;
-    const state = {shell, video, button, config, title, inView: false, ready: false, loaded: false, userPaused: false, userStarted: false};
-    states.push(state);
-    video.muted = true;
-    video.defaultMuted = true;
-
-    video.addEventListener('loadeddata', () => {
-      state.ready = true;
-      shell.dataset.state = 'ready';
-      shell.classList.add('has-video');
-      button.hidden = false;
-      updateButton(state);
-      syncPlayback(state);
+    buttons.forEach((button) => {
+      const active = button.dataset.projectId === projectId;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
     });
-    video.addEventListener('play', () => updateButton(state));
-    video.addEventListener('pause', () => updateButton(state));
-    video.addEventListener('error', () => {
-      state.ready = false;
-      shell.classList.remove('has-video');
-      shell.dataset.state = 'unavailable';
-      button.hidden = true;
-      shell.querySelector('.placeholder-title').textContent = 'Demo unavailable';
-      shell.querySelector('.placeholder-note').textContent = 'The project story is below.';
+
+    number.textContent = `${project.number} / ${project.label}`;
+    status.textContent = project.status;
+    title.textContent = project.title;
+    summary.textContent = project.summary;
+    challenge.textContent = project.challenge;
+
+    project.metrics.forEach(([value, label], index) => {
+      metricValues[index].textContent = value;
+      metricLabels[index].textContent = label;
     });
-    button.addEventListener('click', () => {
-      if (video.paused) {
-        state.userPaused = false;
-        state.userStarted = true;
-        play(state);
+
+    renderList(trace, project.trace, (item, index) => {
+      const li = document.createElement('li');
+      const step = document.createElement('span');
+      const copy = document.createElement('strong');
+      step.textContent = String(index + 1).padStart(2, '0');
+      copy.textContent = item;
+      li.append(step, copy);
+      return li;
+    });
+
+    renderList(stack, project.stack, (item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      return li;
+    });
+
+    renderList(links, project.links, (item) => {
+      const anchor = document.createElement('a');
+      anchor.className = 'button button-light';
+      anchor.href = item.href;
+      anchor.target = '_blank';
+      anchor.rel = 'noreferrer';
+      anchor.textContent = item.label;
+      return anchor;
+    });
+
+    setMedia(project);
+    stage.dataset.activeProject = projectId;
+
+    if (options.focus) {
+      const activeButton = buttons.find((button) => button.dataset.projectId === projectId);
+      if (activeButton) activeButton.focus();
+    }
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => selectProject(button.dataset.projectId));
+    button.addEventListener('keydown', (event) => {
+      const current = order.indexOf(button.dataset.projectId);
+      let next = current;
+      if (event.key === 'ArrowDown') next = (current + 1) % order.length;
+      else if (event.key === 'ArrowUp') next = (current - 1 + order.length) % order.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = order.length - 1;
+      else return;
+      event.preventDefault();
+      selectProject(order[next], { focus: true });
+    });
+  });
+
+  const numberShortcuts = {
+    '1': 'mobile-pros',
+    '2': 'classmaker',
+    '3': 'brevia',
+    '4': 'applylog',
+  };
+
+  document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement || target?.isContentEditable;
+    if (isTyping || event.altKey || event.ctrlKey || event.metaKey) return;
+    const projectId = numberShortcuts[event.key];
+    if (projectId) selectProject(projectId, { focus: true });
+  });
+
+  const copyButton = document.getElementById('copy-email');
+  const copyStatus = document.getElementById('copy-status');
+
+  async function copyEmail() {
+    const email = copyButton.dataset.email;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(email);
       } else {
-        state.userPaused = true;
-        state.video.pause();
+        const field = document.createElement('textarea');
+        field.value = email;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        document.execCommand('copy');
+        field.remove();
       }
-    });
-    if (observer) observer.observe(shell);
-    else {
-      state.userPaused = true;
-      load(state);
+      copyStatus.textContent = 'Email copied.';
+    } catch {
+      copyStatus.textContent = `Copy failed. Email: ${email}`;
     }
-  });
+  }
 
-  document.addEventListener('visibilitychange', () => states.forEach(syncPlayback));
-  if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', () => {
-    states.forEach(state => {
-      if (reducedMotion.matches && !state.userStarted) state.video.pause();
-      else syncPlayback(state);
-    });
-  });
+  copyButton.addEventListener('click', copyEmail);
+  selectProject('mobile-pros');
 })();
