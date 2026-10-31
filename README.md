@@ -37,11 +37,11 @@ This package has not been publicly deployed. A local file path or ChatGPT attach
 
 The Fast Pitch feature is isolated and intentionally easy to remove. It lives **above the existing Columbia CS intro line** in `index.html` and is styled in a standalone, clearly labeled CSS block at the end of `styles.css`.
 
-Before publishing: add the actual `export.mp4` to `videos/fast-pitch-submission.mp4` (same filename as the HTML source). **Do not deploy with a missing video asset.** Test playback on desktop and mobile.
+Before publishing: upload the supplied `export.mp4` into the repository root (same filename as the HTML source). **Do not deploy with a missing video asset.** Test playback on desktop and mobile.
 
 To restore the original homepage after judging, remove only:
 1. The section between `<!-- TEMPORARY FAST PITCH SUBMISSION -->` and `<!-- END TEMPORARY FAST PITCH SUBMISSION -->` in `index.html`.
 2. The CSS block between the analogous temporary-feature comments in `styles.css`.
-3. The single `videos/fast-pitch-submission.mp4` asset.
+3. The single `export.mp4` asset.
 
 This leaves all pre-existing portfolio content unchanged. Alternatively revert the isolated feature commit (if nothing subsequent depends on it).
