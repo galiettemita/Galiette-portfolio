@@ -33,3 +33,15 @@ Early-stage projects can be added later once there is real work to show; until t
 The separate single-file HTML preview embeds this site's CSS, JavaScript, and resume PDF. It can be opened directly without unzipping. Use this folder as the editable source.
 
 This package has not been publicly deployed. A local file path or ChatGPT attachment is not a public website URL.
+## Temporary Fast Pitch video feature (October 2026)
+
+The Fast Pitch feature is isolated and intentionally easy to remove. It lives **above the existing Columbia CS intro line** in `index.html` and is styled in a standalone, clearly labeled CSS block at the end of `styles.css`.
+
+Before publishing: add the actual `export.mp4` to `videos/fast-pitch-submission.mp4` (same filename as the HTML source). **Do not deploy with a missing video asset.** Test playback on desktop and mobile.
+
+To restore the original homepage after judging, remove only:
+1. The section between `<!-- TEMPORARY FAST PITCH SUBMISSION -->` and `<!-- END TEMPORARY FAST PITCH SUBMISSION -->` in `index.html`.
+2. The CSS block between the analogous temporary-feature comments in `styles.css`.
+3. The single `videos/fast-pitch-submission.mp4` asset.
+
+This leaves all pre-existing portfolio content unchanged. Alternatively revert the isolated feature commit (if nothing subsequent depends on it).
